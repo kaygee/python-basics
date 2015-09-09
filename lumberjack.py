@@ -1,6 +1,6 @@
 name = input("What's your name? ")
 
 if name == "Kevin":
-    print(name + " is a lumberjack and he's OK!")
+    print("{} is a lumberjack and he's OK!".format(name))
 else:
-    print(name + " is not a lumberjack and he's not OK!")
+    print("{} is NOT a lumberjack and he is NOT OK!".format(name))
