@@ -1,15 +1,14 @@
 import random
 
-CELLS = [(0, 0), (0, 1), (0, 2),
-         (1, 0), (1, 1), (1, 2),
-         (2, 0), (2, 1), (2, 2)]
+MATRIX_X = 5
+MATRIX_Y = 5
 
 chosen_cells = dict()
 
 def initialize_locations():
-    monster = get_random_unique_location("MONSTER", 3, 3)
-    door = get_random_unique_location("DOOR", 3, 3)
-    start = get_random_unique_location("PLAYER", 3, 3)
+    monster = get_random_unique_location("MONSTER", MATRIX_X, MATRIX_Y)
+    door = get_random_unique_location("DOOR", MATRIX_X, MATRIX_Y)
+    start = get_random_unique_location("PLAYER", MATRIX_X, MATRIX_Y)
 
     # return monster, door, start
     return monster, door, start
@@ -36,16 +35,16 @@ def move_player(location, move):
     current_location_x = location[0]
     current_location_y = location[1]
     # If move is LEFT (y-1)
-    if move == 'LEFT':
+    if move == 'L':
         chosen_cells['PLAYER'] = (current_location_x, current_location_y - 1)
     # If move is RIGHT (y+1)
-    if move == 'RIGHT':
+    if move == 'R':
         chosen_cells['PLAYER'] = (current_location_x, current_location_y + 1)
     # If move is UP (x-1)
-    if move == 'UP':
+    if move == 'U':
         chosen_cells['PLAYER'] = (current_location_x - 1, current_location_y)
     # If move is DOWN (x+1)
-    if move == 'DOWN':
+    if move == 'D':
         chosen_cells['PLAYER'] = (current_location_x + 1, current_location_y)
 
 def get_moves(location):
@@ -64,6 +63,24 @@ def get_moves(location):
         MOVES.remove('DOWN')
     return MOVES
 
+def print_matrix():
+    player_location = chosen_cells['PLAYER']
+    door_location = chosen_cells['DOOR']
+    monster_location = chosen_cells['MONSTER']
+
+    MATRIX = [[0 for x in range(5)] for x in range(5)]
+
+    MATRIX[player_location[0]][player_location[1]] = 1
+    MATRIX[door_location[0]][door_location[1]] = 2
+    MATRIX[monster_location[0]][monster_location[1]] = 3
+
+    for x in list(range(MATRIX_X)):
+        for y in list(range(MATRIX_Y)):
+            print("{} ".format(MATRIX[x][y]), end="")
+        print("\n", end="")
+
+
+
 # Start out by assigning the locations.
 initialize_locations()
 print(chosen_cells)
@@ -71,7 +88,7 @@ print("Welcome to the dungeon!")
 
 while True:
     print("You're currently in room {}".format(chosen_cells['PLAYER'])) # fill in with player position
-    print(chosen_cells)
+    print_matrix()
     print("You can move {}".format(get_moves(chosen_cells['PLAYER']))) # fill in with available moves
     print("Enter QUIT to quit.")
 
