@@ -31,36 +31,27 @@ def get_random_unique_location(label, x, y):
         chosen_cells[label] = (candidate_x, candidate_y)
 
 def move_player(location, move):
-    # Get player's current location
     current_location_x = location[0]
     current_location_y = location[1]
-    # If move is LEFT (y-1)
     if move == 'L':
         chosen_cells['PLAYER'] = (current_location_x, current_location_y - 1)
-    # If move is RIGHT (y+1)
     if move == 'R':
         chosen_cells['PLAYER'] = (current_location_x, current_location_y + 1)
-    # If move is UP (x-1)
     if move == 'U':
         chosen_cells['PLAYER'] = (current_location_x - 1, current_location_y)
-    # If move is DOWN (x+1)
     if move == 'D':
         chosen_cells['PLAYER'] = (current_location_x + 1, current_location_y)
 
 def get_moves(location):
-    MOVES = ['LEFT', 'RIGHT', 'UP', 'DOWN']
-    # If players y is 0, remove LEFT
+    MOVES = ['L', 'R', 'U', 'D']
     if location[1] == 0:
-        MOVES.remove('LEFT')
-    # If players x is 0, remove UP
+        MOVES.remove('L')
     if location[0] == 0:
-        MOVES.remove('UP')
-    # If players y is 2, remove RIGHT
-    if location[1] == 2:
-        MOVES.remove('RIGHT')
-    # If players x is 2, remove DOWN
-    if location[0] == 2:
-        MOVES.remove('DOWN')
+        MOVES.remove('U')
+    if location[1] == MATRIX_Y - 1:
+        MOVES.remove('R')
+    if location[0] == MATRIX_X - 1:
+        MOVES.remove('D')
     return MOVES
 
 def print_matrix():
@@ -87,27 +78,27 @@ print(chosen_cells)
 print("Welcome to the dungeon!")
 
 while True:
-    print("You're currently in room {}".format(chosen_cells['PLAYER'])) # fill in with player position
+    print("You're currently in room {}".format(chosen_cells['PLAYER']))
     print_matrix()
-    print("You can move {}".format(get_moves(chosen_cells['PLAYER']))) # fill in with available moves
-    print("Enter QUIT to quit.")
+    print("You can move {}".format(get_moves(chosen_cells['PLAYER'])))
+    print("Enter Q to quit.")
 
     move = input("> ")
     move = move.upper()
 
-    if move == 'QUIT':
+    if move == 'Q':
         break
 
-    move_player(chosen_cells['PLAYER'], move)
+    if move in get_moves(chosen_cells['PLAYER']):
+        move_player(chosen_cells['PLAYER'], move)
+    else:
+        print("Sorry, I don't undestand {}".format(move))
+        continue
 
-    # If it's a good move, change the players position.
-    # If it's a bad move, don't change anything.
-    # If the new player position is the door, they win!
     if chosen_cells['PLAYER'] == chosen_cells['DOOR']:
         print("You've escaped!")
         break
-    # If the new player position is the monster, they lose!
+
     if chosen_cells['PLAYER'] == chosen_cells['MONSTER']:
         print("You were eaten by a monster! O noes!")
         break
-    # Otherwise, continue
