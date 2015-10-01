@@ -145,14 +145,24 @@ McFarland, Dave, dave.mcfarland@teamtreehouse.com, 555-555-5557, @davemcfarland
 Kesten, Joy, joy@teamtreehouse.com, 555-555-5558, @joykesten'''
 
 contacts = re.search(r'''
-    (?P<email>[-\w\d.+]+@[-\w\d.]+)
-    ,\s
+    (?P<email>[-\w\d.+]+@[-\w\d.]+),\s
     (?P<phone>\(?\d{3}\)?-?\s?\d{3}-\d{4})
 ''', contacts_list, re.IGNORECASE | re.VERBOSE)
 
 print("Contacts!")
 print("Name [{}]".format(contacts.group(1)))
 print("Phone number [{}]".format(contacts.group(2)))
+
+print("compiled contacts and subgroups")
+
+compiled_contacts = re.compile(r'''
+    (?P<email>[-\w\d.+]+@[-\w\d.]+)
+    ,\s
+    (?P<phone>\(?\d{3}\)?-?\s?\d{3}-\d{4})
+''', re.IGNORECASE | re.VERBOSE)
+
+for match in compiled_contacts.finditer(contacts_list):
+    print("area code [{phone}]".format(**match.groupdict()))
 
 # Great! Now, make a new variable, twitters that is an re.search() where the
 # pattern catches the Twitter handle for a person. Remember to mark it as being
@@ -164,3 +174,55 @@ twitters = re.search(r'''
 
 print("Twitters")
 print(twitters)
+
+# re.compile(pattern, flags) - method to pre-compile and save a regular expression pattern, and any associated flags, for later use.
+# .groupdict() - method to generate a dictionary from a Match object's groups. The keys will be the group names. The values will be the results of the patterns in the group.
+# re.finditer() - method to generate an iterable from the non-overlapping matches of a regular expression. Very handy for for loops.
+# .group() - method to access the content of a group. 0 or none is the entire match. 1 through how ever many groups you have will get that group. Or use a group's name to get it if you're using named groups.
+
+compiled_regex = re.compile(r'''
+    (?P<twitters>@[\w\d]+)$
+''', re.VERBOSE | re.MULTILINE)
+
+print(re.search(compiled_regex, contacts_list).groupdict())
+
+for match in compiled_regex.finditer(contacts_list):
+    print(match.group('twitters'))
+
+# Create a variable named players that is an re.search() or re.match() to capture
+# three groups: last_name, first_name, and score. It should include re.MULTILINE.
+
+players_data = '''Love, Kenneth: 20
+Chalkley, Andrew: 25
+McFarland, Dave: 10
+Kesten, Joy: 22
+Stewart Pinchback, Pinckney Benton: 18'''
+
+print("Players...")
+
+players = re.search(r'''
+    (?P<last_name>[-\w ]*)
+    ,\s
+    (?P<first_name>[-\w ]*)
+    :\s
+    (?P<score>[\d]*)
+''', players_data, re.MULTILINE | re.VERBOSE |re.IGNORECASE)
+
+print(players)
+
+class Player:
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
+
+players_compiled = re.compile(r'''
+    (?P<last_name>[-\w ]*)
+    ,\s
+    (?P<first_name>[-\w ]*)
+    :\s
+    (?P<score>[\d]*)
+''', re.MULTILINE | re.VERBOSE |re.IGNORECASE)
+
+print(re.search(players_compiled, players_data).groupdict())
